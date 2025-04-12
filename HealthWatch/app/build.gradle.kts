@@ -50,7 +50,7 @@ dependencies {
     implementation(libs.wear.tooling.preview)
     implementation(libs.activity.compose)
     implementation(libs.core.splashscreen)
-    implementation(files("libs/samsung-health-data-api-1.0.0-b2.aar"))
+
     implementation(files("libs/samsung-health-sensor-api-v1.3.0.aar"))
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
