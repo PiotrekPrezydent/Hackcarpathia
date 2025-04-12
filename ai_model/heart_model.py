@@ -87,6 +87,6 @@ if __name__ == "__main__":
     model.AiModel()
     
     # Test prediction
-    test_input = [72, 0, 2, 119, 2.9, 3]  # Example input
+    test_input = [65, 1, 1, 194, 3.7, 1]  # Example input
     prediction = model.predict(test_input)
     print(f"\nPrediction for input {test_input}: {prediction}")
