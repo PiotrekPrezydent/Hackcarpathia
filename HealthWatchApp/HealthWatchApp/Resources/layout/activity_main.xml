@@ -11,10 +11,32 @@
         android:layout_height="match_parent"
         android:padding="@dimen/inner_frame_layout_padding"
         app:boxedEdges="all">
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_world" />
+        <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <Button
+                        android:text="Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp" android:id="@+id/button3"/>
+                <Space
+                        android:layout_width="122dp"
+                        android:layout_height="25dp"/>
+                <Button
+                        android:text="Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp" android:id="@+id/button2"/>
+                <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="227dp"/>
+                <Button
+                        android:text="Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/button4"/>
+            </LinearLayout>
+        </ScrollView>
     </FrameLayout>
 </androidx.wear.widget.BoxInsetLayout>
