@@ -2,20 +2,33 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.feature_selection import SelectKBest, f_classif
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def select(X, y, features):
+    # Selekcja cech
+    selector = SelectKBest(score_func=f_classif, k='all')
+    selector.fit(X, y)
+    scores = selector.scores_
+
+    # Wynik
+    for f, s in zip(features, scores):
+        print(f"{f}: {s:.2f}")
 
 def AiModel():
     path = os.path.join(BASE_DIR, f"datasets/Cardiovascular_Disease_Dataset.csv")
     print(path)
 
     # Simulate data (replace this with real data from your watch)
-    data = pd.read_csv(path)
-    print(data.head())
+    df = pd.read_csv(path)
 
-    X = data[['chestpain', 'maxheartrate']]  # Features
-    y = data['target']  # Target
+    features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
+    X = df[features]
+    y = df['target']
+
+    select(X, y, features)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
