@@ -3,7 +3,7 @@
  * most up to date changes to the libraries and their usages.
  */
 
-package com.example.healthwatchclient.presentation
+package com.example.healthwatch.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,8 +23,8 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
 import androidx.wear.tooling.preview.devices.WearDevices
-import com.example.healthwatchclient.R
-import com.example.healthwatchclient.presentation.theme.HealthWatchClientTheme
+import com.example.healthwatch.R
+import com.example.healthwatch.presentation.theme.HealthWatchTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun WearApp(greetingName: String) {
-    HealthWatchClientTheme {
+    HealthWatchTheme {
         Box(
             modifier = Modifier
                 .fillMaxSize()

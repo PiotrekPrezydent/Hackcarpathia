@@ -1,10 +1,10 @@
-package com.example.healthwatchclient.presentation.theme
+package com.example.healthwatch.presentation.theme
 
 import androidx.compose.runtime.Composable
 import androidx.wear.compose.material.MaterialTheme
 
 @Composable
-fun HealthWatchClientTheme(
+fun HealthWatchTheme(
     content: @Composable () -> Unit
 ) {
     /**

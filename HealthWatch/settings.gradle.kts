@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "HealthWatchClient"
+rootProject.name = "HealthWatch"
 include(":app")
  

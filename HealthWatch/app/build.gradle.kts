@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.healthwatchclient"
+    namespace = "com.example.healthwatch"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.healthwatchclient"
-        minSdk = 35
+        applicationId = "com.example.healthwatch"
+        minSdk = 30
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
