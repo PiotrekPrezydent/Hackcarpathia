@@ -4,7 +4,7 @@ import json
 from heart_model import HeartModel  # Import klasy HeartModel
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "models/saved_model.pkl")  # Ścieżka do modelu
+MODEL_PATH = os.path.join(BASE_DIR, "models/heartd_model.pkl")  # Ścieżka do modelu
 
 def start_server():
     # Tworzenie socketu
