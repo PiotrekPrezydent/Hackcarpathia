@@ -90,7 +90,7 @@ print("Obliczony współczynnik nachylenia (slope):", computed_slope)
 print("Przypisana wartość slope:", slope_value)
 
 # Ustalanie adresu URL serwera
-url = "http://172.16.16.13:8080"
+url = "http://127.0.0.1:8080"
 headers = {"Content-Type": "application/json"}
 
 # Zmienne do zliczania chorych i zdrowych
