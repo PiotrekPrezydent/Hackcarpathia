@@ -1,46 +1,104 @@
+import json
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
+from xgboost import XGBClassifier
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import SelectKBest, f_classif
 import os
+import joblib
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "models/heartd_model.pkl")
+SCALER_PATH = os.path.join(BASE_DIR, "models/scaler.pkl")  # Save scaler separately
 
-def select(X, y, features):
-    # Selekcja cech
-    selector = SelectKBest(score_func=f_classif, k='all')
-    selector.fit(X, y)
-    scores = selector.scores_
+class HeartModel:
+    def __init__(self):
+        self.xgb = None
+        self.scaler = None
+        self.selected_features = None
 
-    # Wynik
-    for f, s in zip(features, scores):
-        print(f"{f}: {s:.2f}")
+    def AiModel(self):
+        path = os.path.join(BASE_DIR, "datasets/Cardiovascular_Disease_Dataset.csv")
+        df = pd.read_csv(path)
+        df = df[df['age'] >= 50]
+        
+        # Check class distribution
+        print("Class distribution:\n", df['target'].value_counts())
 
-def AiModel():
-    path = os.path.join(BASE_DIR, f"datasets/Cardiovascular_Disease_Dataset.csv")
-    print(path)
+        features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
+        X = df[features]
+        y = df['target']
 
-    # Simulate data (replace this with real data from your watch)
-    df = pd.read_csv(path)
+        # Scale features
+        self.scaler = StandardScaler()
+        X_scaled = self.scaler.fit_transform(X)
+        
+        # Feature selection
+        selector = SelectKBest(score_func=f_classif, k='all')
+        selector.fit(X_scaled, y)
+        self.selected_features = selector.get_support(indices=True)
+        print("Selected features:", [features[i] for i in self.selected_features])
+        X_selected = X_scaled[:, self.selected_features]
 
-    features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
-    X = df[features]
-    y = df['target']
+        X_train, X_test, y_train, y_test = train_test_split(X_selected, y, test_size=0.2, random_state=42)
 
-    select(X, y, features)
+        if os.path.exists(MODEL_PATH):
+            self.xgb = joblib.load(MODEL_PATH)
+            self.scaler = joblib.load(SCALER_PATH)
+            print("Model and scaler loaded from file.")
+        else:
+            self.xgb = XGBClassifier(random_state=42, eval_metric='logloss', scale_pos_weight=self.calculate_scale_pos_weight(y))
+            self.xgb.fit(X_train, y_train)
+            joblib.dump(self.xgb, MODEL_PATH)
+            joblib.dump(self.scaler, SCALER_PATH)
+            print("Model and scaler saved to file.")
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        y_pred = self.xgb.predict(X_test)
+        print("\nClassification Report:")
+        print(classification_report(y_test, y_pred))
+        print("\nConfusion Matrix:")
+        print(confusion_matrix(y_test, y_pred))
 
-    knn = KNeighborsClassifier(n_neighbors=3)  # Use 3 nearest neighbors
-    knn.fit(X_train, y_train)
+    def calculate_scale_pos_weight(self, y):
+        # Calculate the ratio of negative to positive classes for imbalance adjustment
+        class_counts = y.value_counts()
+        return class_counts[0] / class_counts[1]
 
-    # Predict on test data
-    y_pred = knn.predict(X_test)
-    print("Predictions:", y_pred)
+    def predict(self, input_data):
+        if not hasattr(self, 'xgb') or self.xgb is None:
+            raise Exception("Model nie został wytrenowany lub wczytany.")
 
-    # Compare with actual values
-    print("Actual values:", y_test.values)
+        # Sprawdzanie, czy dane wejściowe są typu list
+        if isinstance(input_data, list):
+            # Konwersja listy na DataFrame
+            features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
+            input_df = pd.DataFrame([input_data], columns=features)
+        elif isinstance(input_data, dict):
+            # Jeśli dane są typu dict, konwertuj na DataFrame
+            features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
+            input_df = pd.DataFrame([input_data], columns=features)
+        else:
+            raise ValueError("Dane wejściowe muszą być typu list lub dict.")
+
+        # Skalowanie przy użyciu zapisanej instancji skalera
+        input_scaled = self.scaler.transform(input_df)
+
+        # Wybór cech na podstawie selekcji
+        input_selected = input_scaled[:, self.selected_features]
+
+        # Dokonanie predykcji
+        prediction = self.xgb.predict(input_selected)[0]
+        return prediction
+
 
 if __name__ == "__main__":
-    AiModel()
+    model = HeartModel()
+    model.AiModel()
+    
+    # Test prediction
+    test_input = [65, 1, 1, 194, 3.7, 1]  # Example input
+    prediction = model.predict(test_input)
+    print(f"\nPrediction for input {test_input}: {prediction}")
