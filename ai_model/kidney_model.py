@@ -6,34 +6,72 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import SelectKBest, f_classif
 import os
 import joblib
+import numpy as np
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "models/heartd_model.pkl")
-SCALER_PATH = os.path.join(BASE_DIR, "models/scaler.pkl")  # Save scaler separately
+MODEL_PATH = os.path.join(BASE_DIR, "models/kidneyd_model.pkl")
+SCALER_PATH = os.path.join(BASE_DIR, "models/scaler.pkl") 
 
-class HeartModel:
+class KidneyModel:
     def __init__(self):
         self.xgb = None
         self.scaler = None
         self.selected_features = None
 
+    def DatasetTransformator(self):
+        # Load data
+        path = os.path.join(BASE_DIR, "datasets/kidney_disease.csv")
+        df_pre = pd.read_csv(path)
+
+        # Step 1: Clean the data (fix '\t' in target)
+        df_pre['target'] = df_pre['target'].str.strip()  # Remove hidden tabs/spaces
+
+        # Step 2: Define columns by type
+        binary_cols = ['rbc', 'pc', 'pcc', 'ba', 'htn', 'dm', 'cad', 'appet', 'pe', 'ane']  # Yes/No or Normal/Abnormal
+        nominal_cols = ['al', 'su', 'sg']  # Multi-class (no ordinal meaning)
+        numerical_cols = ['age', 'bp', 'bgr', 'bu', 'sc', 'sod', 'pot', 'hemo', 'pcv', 'wc', 'rc']
+
+        # Step 3: Auto-convert categorical features
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ('binary', OrdinalEncoder(), binary_cols),  # Binary → 0/1
+                ('nominal', OneHotEncoder(drop='first'), nominal_cols),  # Nominal → One-hot
+                ('numeric', 'passthrough', numerical_cols)  # Leave numbers unchanged
+            ])
+
+        # Apply preprocessing
+        X_processed = preprocessor.fit_transform(df_pre)
+
+        # Convert back to DataFrame (optional)
+        feature_names = (
+            binary_cols + 
+            list(preprocessor.named_transformers_['nominal'].get_feature_names_out(nominal_cols)) +
+            numerical_cols
+        )
+        df_processed = pd.DataFrame(X_processed, columns=feature_names)
+
+        # Step 4: Encode target
+        df_processed['target'] = df_pre['target'].map({'ckd': 1, 'notckd': 0})
+
+        return df_processed
+
     def AiModel(self):
-        path = os.path.join(BASE_DIR, "datasets/Cardiovascular_Disease_Dataset.csv")
-        df = pd.read_csv(path)
+        df = self.DatasetTransformator()
+        print(df.head())
+
         df = df[df['age'] >= 50]
-        
-        # Check class distribution
+
         print("Class distribution:\n", df['target'].value_counts())
 
-        features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
+        features = ['bp', 'hemo', 'htn', 'age', 'dm']
         X = df[features]
         y = df['target']
 
-        # Scale features
         self.scaler = StandardScaler()
         X_scaled = self.scaler.fit_transform(X)
-        
-        # Feature selection
+
         selector = SelectKBest(score_func=f_classif, k='all')
         selector.fit(X_scaled, y)
         self.selected_features = selector.get_support(indices=True)
@@ -64,38 +102,6 @@ class HeartModel:
         class_counts = y.value_counts()
         return class_counts[0] / class_counts[1]
 
-    def predict(self, input_data):
-        if not hasattr(self, 'xgb') or self.xgb is None:
-            raise Exception("Model nie został wytrenowany lub wczytany.")
-
-        # Sprawdzanie, czy dane wejściowe są typu list
-        if isinstance(input_data, list):
-            # Konwersja listy na DataFrame
-            features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
-            input_df = pd.DataFrame([input_data], columns=features)
-        elif isinstance(input_data, dict):
-            # Jeśli dane są typu dict, konwertuj na DataFrame
-            features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
-            input_df = pd.DataFrame([input_data], columns=features)
-        else:
-            raise ValueError("Dane wejściowe muszą być typu list lub dict.")
-
-        # Skalowanie przy użyciu zapisanej instancji skalera
-        input_scaled = self.scaler.transform(input_df)
-
-        # Wybór cech na podstawie selekcji
-        input_selected = input_scaled[:, self.selected_features]
-
-        # Dokonanie predykcji
-        prediction = self.xgb.predict(input_selected)[0]
-        return prediction
-
-
 if __name__ == "__main__":
-    model = HeartModel()
+    model = KidneyModel()
     model.AiModel()
-    
-    # Test prediction
-    test_input = [65, 1, 1, 194, 3.7, 1]  # Example input
-    prediction = model.predict(test_input)
-    print(f"\nPrediction for input {test_input}: {prediction}")
