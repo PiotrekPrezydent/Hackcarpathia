@@ -40,7 +40,18 @@ y = lr_data["Heart Rate (BPM)"].values
 lr_model = LinearRegression()
 lr_model.fit(X, y)
 slope = lr_model.coef_[0]
-print("Globalny slope (współczynnik):", slope)
+
+# Przypisanie wartości slope na podstawie kryteriów (np. wartości współczynnika regresji)
+if slope > 0:
+    slope_value = 1  # upsloping
+elif slope == 0:
+    slope_value = 2  # flat
+else:
+    slope_value = 3  # downsloping
+
+print("Globalny slope (wzór):", slope)
+print("Przypisany slope:", slope_value)
+
 gender = 1  # przykładowa płeć
 
 url = "http://172.16.16.13:8080"
@@ -63,7 +74,7 @@ while True:
             "restingrelectro": round(local_restingrelectro, 2) if not np.isnan(local_restingrelectro) else None,
             "maxheartrate": maxheartrate,
             "oldpeak": round(local_oldpeak, 2) if not np.isnan(local_oldpeak) else None,
-            "slope": round(slope, 2)
+            "slope": slope_value  # Zmieniony slope
         }
     }
     json_data = json.dumps(data_payload)
