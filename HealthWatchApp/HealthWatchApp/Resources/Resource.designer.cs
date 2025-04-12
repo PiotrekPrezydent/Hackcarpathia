@@ -3777,55 +3777,58 @@ namespace HealthWatchApp
 			public const int preference_wrapped_icon = 2131230851;
 			
 			// aapt resource value: 0x7F080084
-			public const int tooltip_frame_dark = 2131230852;
+			public const int rounded_button = 2131230852;
 			
 			// aapt resource value: 0x7F080085
-			public const int tooltip_frame_light = 2131230853;
+			public const int tooltip_frame_dark = 2131230853;
 			
 			// aapt resource value: 0x7F080086
-			public const int ws_action_item_background = 2131230854;
+			public const int tooltip_frame_light = 2131230854;
 			
 			// aapt resource value: 0x7F080087
-			public const int ws_action_item_icon_background = 2131230855;
+			public const int ws_action_item_background = 2131230855;
 			
 			// aapt resource value: 0x7F080088
-			public const int ws_full_sad = 2131230856;
+			public const int ws_action_item_icon_background = 2131230856;
 			
 			// aapt resource value: 0x7F080089
-			public const int ws_ic_expand_less_white_22 = 2131230857;
+			public const int ws_full_sad = 2131230857;
 			
 			// aapt resource value: 0x7F08008A
-			public const int ws_ic_expand_more_white_22 = 2131230858;
+			public const int ws_ic_expand_less_white_22 = 2131230858;
 			
 			// aapt resource value: 0x7F08008B
-			public const int ws_ic_more_horiz_24dp_wht = 2131230859;
+			public const int ws_ic_expand_more_white_22 = 2131230859;
 			
 			// aapt resource value: 0x7F08008C
-			public const int ws_ic_more_vert_24dp_wht = 2131230860;
+			public const int ws_ic_more_horiz_24dp_wht = 2131230860;
 			
 			// aapt resource value: 0x7F08008D
-			public const int ws_open_on_phone_animation = 2131230861;
+			public const int ws_ic_more_vert_24dp_wht = 2131230861;
 			
 			// aapt resource value: 0x7F08008E
-			public const int ws_switch_thumb_material_anim = 2131230862;
+			public const int ws_open_on_phone_animation = 2131230862;
 			
 			// aapt resource value: 0x7F08008F
-			public const int ws_switch_thumb_mtrl_14w = 2131230863;
+			public const int ws_switch_thumb_material_anim = 2131230863;
 			
 			// aapt resource value: 0x7F080090
-			public const int ws_switch_thumb_mtrl_15w = 2131230864;
+			public const int ws_switch_thumb_mtrl_14w = 2131230864;
 			
 			// aapt resource value: 0x7F080091
-			public const int ws_switch_thumb_mtrl_16w = 2131230865;
+			public const int ws_switch_thumb_mtrl_15w = 2131230865;
 			
 			// aapt resource value: 0x7F080092
-			public const int ws_switch_thumb_mtrl_17w = 2131230866;
+			public const int ws_switch_thumb_mtrl_16w = 2131230866;
 			
 			// aapt resource value: 0x7F080093
-			public const int ws_switch_thumb_mtrl_18w = 2131230867;
+			public const int ws_switch_thumb_mtrl_17w = 2131230867;
 			
 			// aapt resource value: 0x7F080094
-			public const int ws_switch_track_mtrl = 2131230868;
+			public const int ws_switch_thumb_mtrl_18w = 2131230868;
+			
+			// aapt resource value: 0x7F080095
+			public const int ws_switch_track_mtrl = 2131230869;
 			
 			static Drawable()
 			{
