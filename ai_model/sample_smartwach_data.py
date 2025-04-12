@@ -97,70 +97,65 @@ headers = {"Content-Type": "application/json"}
 chorych = 0
 zdrowych = 0
 
-# W pętli wysyłamy dane, aż serwer zwróci "Choroba serca" lub do 100 prób
-max_attempts = 100
-attempts = 0
 
-while attempts < max_attempts:
-    # Losowanie pojedynczego rekordu
-    record = df.sample(1).iloc[0]
+# Losowanie pojedynczego rekordu
+record = df.sample(1).iloc[0]
 
-    # Losowe generowanie danych:
-    # age: losowa wartość z przedziału 50 do 80
-    age_val = np.random.randint(50, 81)
-    # gender: losowa wartość 0 lub 1
-    gender_val = int(np.random.choice([0, 1]))
+# Losowe generowanie danych:
+# age: losowa wartość z przedziału 50 do 80
+age_val = np.random.randint(50, 81)
+# gender: losowa wartość 0 lub 1
+gender_val = int(np.random.choice([0, 1]))
 
-    # Wyznaczamy lokalny puls spoczynkowy ("restingrelectro")
-    if pd.notna(record["Activity Level Numeric"]) and record["Activity Level Numeric"] < 2:
-        local_resting = record["Heart Rate (BPM)"]
-    else:
-        local_resting = global_resting_relectro
+# Wyznaczamy lokalny puls spoczynkowy ("restingrelectro")
+if pd.notna(record["Activity Level Numeric"]) and record["Activity Level Numeric"] < 2:
+    local_resting = record["Heart Rate (BPM)"]
+else:
+    local_resting = global_resting_relectro
 
-    # Obliczenie lokalnego oldpeak – różnica między maxheartrate a lokalnym tętnem spoczynkowym
-    if pd.notna(local_resting) and local_resting < maxheartrate:
-        local_oldpeak = maxheartrate - local_resting + np.random.uniform(-3, 3)  # Dodajemy losowy szum
-    else:
-        local_oldpeak = mean_oldpeak  # Średnia zastępcza dla oldpeak w przypadku nan
+# Obliczenie lokalnego oldpeak – różnica między maxheartrate a lokalnym tętnem spoczynkowym
+if pd.notna(local_resting) and local_resting < maxheartrate:
+    local_oldpeak = maxheartrate - local_resting + np.random.uniform(-3, 3)  # Dodajemy losowy szum
+else:
+    local_oldpeak = mean_oldpeak  # Średnia zastępcza dla oldpeak w przypadku nan
 
-    # Przygotowanie ładunku JSON – wszystkie wartości są castowane do intów:
-    data_payload = {
-        "model": "heart_model",
-        "data": {
-            "age": int(age_val),
-            "gender": int(gender_val),
-            "restingrelectro": int(round(local_resting)) if pd.notna(local_resting) else mean_restingrelectro,
-            "maxheartrate": int(round(maxheartrate)),
-            "oldpeak": int(round(local_oldpeak)) if pd.notna(local_oldpeak) else mean_oldpeak,
-            "slope": int(slope_value)
-        }
+# Przygotowanie ładunku JSON – wszystkie wartości są castowane do intów:
+data_payload = {
+    "model": "heart_model",
+    "data": {
+        "age": int(age_val),
+        "gender": int(gender_val),
+        "restingrelectro": int(round(local_resting)) if pd.notna(local_resting) else mean_restingrelectro,
+        "maxheartrate": int(round(maxheartrate)),
+        "oldpeak": int(round(local_oldpeak)) if pd.notna(local_oldpeak) else mean_oldpeak,
+        "slope": int(slope_value)
     }
+}
 
-    json_data = json.dumps(data_payload)
+json_data = json.dumps(data_payload)
 
-    print("\nWybrano rekord z wygenerowanymi danymi:")
-    print(json_data)
+print("\nWybrano rekord z wygenerowanymi danymi:")
+print(json_data)
+
+try:
+    response = requests.post(url, data=json_data, headers=headers)
+    print("Status odpowiedzi:", response.status_code)
+    print("Treść odpowiedzi:", response.text)
 
     try:
-        response = requests.post(url, data=json_data, headers=headers)
-        print("Status odpowiedzi:", response.status_code)
-        print("Treść odpowiedzi:", response.text)
-
-        try:
-            result = response.json()
-            prediction = result.get("prediction", "")
-            if prediction == "Choroba serca":
-                chorych += 1
-                print("Dodano do liczby chorych: 1")
-            elif prediction == "Brak choroby serca":
-                zdrowych += 1
-                print("Dodano do liczby zdrowych: 1")
-        except Exception as e:
-            print("Błąd parsowania JSON odpowiedzi:", e)
+        result = response.json()
+        prediction = result.get("prediction", "")
+        if prediction == "Choroba serca":
+            chorych += 1
+            print("Dodano do liczby chorych: 1")
+        elif prediction == "Brak choroby serca":
+            zdrowych += 1
+            print("Dodano do liczby zdrowych: 1")
     except Exception as e:
-        print("Błąd podczas wysyłania żądania:", e)
+        print("Błąd parsowania JSON odpowiedzi:", e)
+except Exception as e:
+    print("Błąd podczas wysyłania żądania:", e)
 
-    attempts += 1
 
 # Wyświetlenie podsumowania
 print(f"\nLiczba zdrowych: {zdrowych}")
