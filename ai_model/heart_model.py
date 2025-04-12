@@ -1,10 +1,11 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
+from xgboost import XGBClassifier
 from sklearn.feature_selection import SelectKBest, f_classif
-import os
 from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.preprocessing import StandardScaler
+import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -14,36 +15,48 @@ def select(X, y, features):
     selector.fit(X, y)
     scores = selector.scores_
 
-    # Wynik
-    for f, s in zip(features, scores):
-        print(f"{f}: {s:.2f}")
+    # Wybór najlepszych cech na podstawie wyników
+    selected_features = selector.get_support(indices=True)
+    print("Wybrane cechy:", [features[i] for i in selected_features])
+
+    return selected_features  # Zwraca indeksy wybranych cech
 
 def AiModel():
     path = os.path.join(BASE_DIR, f"datasets/Cardiovascular_Disease_Dataset.csv")
     print(path)
 
-    # Simulate data (replace this with real data from your watch)
+    # Wczytywanie i filtracja danych
     df = pd.read_csv(path)
+    df = df[df['age'] >= 60]
 
-    features = ['restingrelectro', 'maxheartrate', 'slope']
+    # Definicja cech i kolumny docelowej
+    features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
     X = df[features]
     y = df['target']
 
-    select(X, y, features)
+    # Skalowanie tylko cech
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # Wybór najlepszych cech
+    selected_indices = select(pd.DataFrame(X_scaled, columns=features), y, features)
+    X_selected = pd.DataFrame(X_scaled, columns=features).iloc[:, selected_indices]  # Używaj tylko wybranych cech
 
-    knn = KNeighborsClassifier(n_neighbors=3)  # Use 3 nearest neighbors
-    knn.fit(X_train, y_train)
+    # Podział na zbiór treningowy i testowy
+    X_train, X_test, y_train, y_test = train_test_split(X_selected, y, test_size=0.2, random_state=42)
 
-    # Predict on test data
-    y_pred = knn.predict(X_test)
+    # Tworzenie modelu XGBoost
+    xgb = XGBClassifier(random_state=42, use_label_encoder=False, eval_metric='logloss')
+    xgb.fit(X_train, y_train)
+
+    # Predykcja na danych testowych
+    y_pred = xgb.predict(X_test)
     print("Predictions:", y_pred)
 
-    # Compare with actual values
+    # Porównanie z rzeczywistymi wartościami
     print("Actual values:", y_test.values)
 
-    # Oblicz dokładność
+    # Obliczanie dokładności
     accuracy = accuracy_score(y_test, y_pred)
     print("Dokładność:", accuracy)
 
