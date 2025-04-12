@@ -1,5 +1,4 @@
 import socket
-import sys
 import os
 import json
 from heart_model import HeartModel  # Import klasy HeartModel
@@ -7,12 +6,12 @@ from heart_model import HeartModel  # Import klasy HeartModel
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "models/saved_model.pkl")  # Ścieżka do modelu
 
-def start_server(ip):
+def start_server():
     # Tworzenie socketu
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((ip, 8080))  # Ustaw port na 8080
+    server_socket.bind(("0.0.0.0", 8080))  # Ustaw nasłuchiwanie na wszystkich interfejsach
     server_socket.listen(5)  # Maksymalna liczba oczekujących połączeń
-    print(f"Serwer działa na {ip}:8080")
+    print("Serwer działa na 0.0.0.0:8080")
 
     # Model domyślny
     model = None
@@ -102,9 +101,4 @@ def send_response(client_socket, response_body):
     client_socket.sendall(response.encode('utf-8'))
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Podaj adres IP jako argument startowy.")
-        sys.exit(1)
-
-    ip = sys.argv[1]
-    start_server(ip)
+    start_server()
