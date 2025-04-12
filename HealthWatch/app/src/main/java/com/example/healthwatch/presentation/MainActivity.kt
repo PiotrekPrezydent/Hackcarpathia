@@ -25,11 +25,11 @@ import androidx.wear.compose.material.TimeText
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.healthwatch.R
 import com.example.healthwatch.presentation.theme.HealthWatchTheme
+import com.samsung.android.service.health.tracking.HealthTracker
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
-
         super.onCreate(savedInstanceState)
 
         setTheme(android.R.style.Theme_DeviceDefault)
