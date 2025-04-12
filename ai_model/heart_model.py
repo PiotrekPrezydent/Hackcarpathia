@@ -9,8 +9,8 @@ import os
 import joblib
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "saved_model.pkl")
-SCALER_PATH = os.path.join(BASE_DIR, "scaler.pkl")  # Save scaler separately
+MODEL_PATH = os.path.join(BASE_DIR, "models/saved_model.pkl")
+SCALER_PATH = os.path.join(BASE_DIR, "models/scaler.pkl")  # Save scaler separately
 
 class HeartModel:
     def __init__(self):
