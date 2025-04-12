@@ -40,9 +40,20 @@
                         android:layout_height="50dp"/>
                 <TextView
                         android:gravity="center"
-                        android:text="Tętno: 2137dpm"
+                        android:text="Tętno:"
+                        android:paddingBottom="0dp"
+                        android:layout_marginTop="10dp"
+                        android:textSize="18dp"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp" android:id="@+id/textView2"/>
+                        android:layout_height="30dp" android:id="@+id/textView2"/>
+                <TextView
+                        android:gravity="center"
+                        android:text="2137dpm"
+                        android:paddingTop="0dp"
+                        android:textSize="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp" android:id="@+id/textView3"/>
             </LinearLayout>
         </ScrollView>
     </FrameLayout>
