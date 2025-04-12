@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -21,7 +23,7 @@ class HeartModel:
     def AiModel(self):
         path = os.path.join(BASE_DIR, "datasets/Cardiovascular_Disease_Dataset.csv")
         df = pd.read_csv(path)
-        df = df[df['age'] >= 60]
+        df = df[df['age'] >= 50]
         
         # Check class distribution
         print("Class distribution:\n", df['target'].value_counts())
@@ -67,20 +69,30 @@ class HeartModel:
 
     def predict(self, input_data):
         if not hasattr(self, 'xgb') or self.xgb is None:
-            raise Exception("Model not trained or loaded")
-            
-        # Convert input to DataFrame
-        features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
-        input_df = pd.DataFrame([input_data], columns=features)
-        
-        # Scale using the saved scaler
+            raise Exception("Model nie został wytrenowany lub wczytany.")
+
+        # Sprawdzanie, czy dane wejściowe są typu list
+        if isinstance(input_data, list):
+            # Konwersja listy na DataFrame
+            features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
+            input_df = pd.DataFrame([input_data], columns=features)
+        elif isinstance(input_data, dict):
+            # Jeśli dane są typu dict, konwertuj na DataFrame
+            features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
+            input_df = pd.DataFrame([input_data], columns=features)
+        else:
+            raise ValueError("Dane wejściowe muszą być typu list lub dict.")
+
+        # Skalowanie przy użyciu zapisanej instancji skalera
         input_scaled = self.scaler.transform(input_df)
-        
-        # Select features
+
+        # Wybór cech na podstawie selekcji
         input_selected = input_scaled[:, self.selected_features]
-        
-        # Predict
-        return self.xgb.predict(input_selected)[0]
+
+        # Dokonanie predykcji
+        prediction = self.xgb.predict(input_selected)[0]
+        return prediction
+
 
 if __name__ == "__main__":
     model = HeartModel()
