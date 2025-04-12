@@ -14,7 +14,7 @@ print("Model wczytany.")
 
 # Przykładowe dane wejściowe (możesz podać swoje)
 features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
-sample_data = pd.DataFrame([[59, 1, 1, 168, 2.1, 2]], columns=features)
+sample_data = pd.DataFrame([[72, 0, 2, 119, 2.9, 3]], columns=features)
 
 # Skalowanie danych (użyj tego samego skalowania co przy trenowaniu)
 scaler = StandardScaler()
