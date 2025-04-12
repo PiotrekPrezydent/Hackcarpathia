@@ -13,11 +13,12 @@
         app:boxedEdges="all">
         <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content" android:clipToPadding="true"
+                android:scrollbarStyle="outsideInset" android:fillViewport="true">
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="800dp">
                 <Button
                         android:background="@drawable/rounded_button"
                         android:text="Doktor"
@@ -35,13 +36,13 @@
                         android:letterSpacing="0.05"
                         android:drawablePadding="@android:dimen/system_app_widget_background_radius"/>
                 <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="227dp"/>
-                <Button
-                        android:background="@drawable/rounded_button"
-                        android:text="Button"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:id="@+id/button4"/>
+                        android:layout_height="50dp"/>
+                <TextView
+                        android:gravity="center"
+                        android:text="Tętno: 2137dpm"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp" android:id="@+id/textView2"/>
             </LinearLayout>
         </ScrollView>
     </FrameLayout>
