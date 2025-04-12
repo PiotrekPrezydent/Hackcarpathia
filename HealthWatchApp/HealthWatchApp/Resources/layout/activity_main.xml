@@ -20,16 +20,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="800dp">
                 <Button
+                        android:textStyle="bold"
                         android:background="@drawable/rounded_button"
                         android:text="Doktor"
                         android:layout_width="match_parent"
+                        android:letterSpacing="0.05"
                         android:layout_height="50dp" android:id="@+id/button3"
                         style="@android:style/Widget.Material.Light.Button"/>
                 <Space
                         android:layout_width="122dp"
                         android:layout_height="11dp"/>
                 <Button
-
+                        android:textStyle="bold"
                         android:background="@drawable/rounded_button"
                         android:layout_width="match_parent"
                         android:layout_height="50dp" android:id="@+id/button2" android:text="Rodzina"
@@ -45,6 +47,7 @@
                         android:layout_marginTop="10dp"
                         android:paddingLeft="10dp"
                         android:textSize="18dp"
+                        android:textColor="#EEEE"
                         android:layout_width="match_parent"
                         android:layout_height="30dp" android:id="@+id/textView2"/>
                 <TextView
