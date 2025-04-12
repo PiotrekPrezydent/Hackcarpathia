@@ -164,4 +164,4 @@ while attempts < max_attempts:
 
 # Wyświetlenie podsumowania
 print(f"\nLiczba zdrowych: {zdrowych}")
-print(f"Liczba chorych: {chorych}")
+print(f"Liczba potencjalnie chorych: {chorych}")
