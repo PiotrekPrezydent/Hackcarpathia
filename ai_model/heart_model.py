@@ -6,63 +6,66 @@ from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 import os
+import joblib  # Biblioteka do zapisywania i wczytywania modelu
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "saved_model.pkl")  # Ścieżka do zapisanego modelu
 
-def select(X, y, features):
-    # Selekcja cech
-    selector = SelectKBest(score_func=f_classif, k='all')
-    selector.fit(X, y)
-    scores = selector.scores_
+class HeartModel:
+    def __init__(self):
+        self.xgb = None
 
-    # Wybór najlepszych cech na podstawie wyników
-    selected_features = selector.get_support(indices=True)
-    print("Wybrane cechy:", [features[i] for i in selected_features])
+    def AiModel(self):
+        path = os.path.join(BASE_DIR, f"datasets/Cardiovascular_Disease_Dataset.csv")
+        print(path)
 
-    return selected_features  # Zwraca indeksy wybranych cech
+        df = pd.read_csv(path)
+        df = df[df['age'] >= 60]
 
-def AiModel():
-    path = os.path.join(BASE_DIR, f"datasets/Cardiovascular_Disease_Dataset.csv")
-    print(path)
+        features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
+        X = df[features]
+        y = df['target']
 
-    # Wczytywanie i filtracja danych
-    df = pd.read_csv(path)
-    df = df[df['age'] >= 60]
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
 
-    # Definicja cech i kolumny docelowej
-    features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
-    X = df[features]
-    y = df['target']
+        selected_indices = self.select(pd.DataFrame(X_scaled, columns=features), y, features)
+        X_selected = pd.DataFrame(X_scaled, columns=features).iloc[:, selected_indices]
 
-    # Skalowanie tylko cech
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+        X_train, X_test, y_train, y_test = train_test_split(X_selected, y, test_size=0.2, random_state=42)
 
-    # Wybór najlepszych cech
-    selected_indices = select(pd.DataFrame(X_scaled, columns=features), y, features)
-    X_selected = pd.DataFrame(X_scaled, columns=features).iloc[:, selected_indices]  # Używaj tylko wybranych cech
+        if os.path.exists(MODEL_PATH):
+            # Wczytaj istniejący model
+            self.xgb = joblib.load(MODEL_PATH)
+            print("Model wczytany z pliku.")
+        else:
+            # Utwórz i wytrenuj model, a następnie zapisz go do pliku
+            self.xgb = XGBClassifier(random_state=42, use_label_encoder=False, eval_metric='logloss')
+            self.xgb.fit(X_train, y_train)
+            joblib.dump(self.xgb, MODEL_PATH)
+            print("Model zapisany do pliku.")
 
-    # Podział na zbiór treningowy i testowy
-    X_train, X_test, y_train, y_test = train_test_split(X_selected, y, test_size=0.2, random_state=42)
+        y_pred = self.xgb.predict(X_test)
+        print("Predictions:", y_pred)
+        print("Actual values:", y_test.values)
+        accuracy = accuracy_score(y_test, y_pred)
+        print("Dokładność:", accuracy)
 
-    # Tworzenie modelu XGBoost
-    xgb = XGBClassifier(random_state=42, use_label_encoder=False, eval_metric='logloss')
-    xgb.fit(X_train, y_train)
+        conf_matrix = confusion_matrix(y_test, y_pred)
+        print("Macierz pomyłek:\n", conf_matrix)
 
-    # Predykcja na danych testowych
-    y_pred = xgb.predict(X_test)
-    print("Predictions:", y_pred)
+    def select(self, X, y, features):
+        selector = SelectKBest(score_func=f_classif, k='all')
+        selector.fit(X, y)
+        scores = selector.scores_
+        selected_features = selector.get_support(indices=True)
+        print("Wybrane cechy:", [features[i] for i in selected_features])
+        return selected_features
 
-    # Porównanie z rzeczywistymi wartościami
-    print("Actual values:", y_test.values)
-
-    # Obliczanie dokładności
-    accuracy = accuracy_score(y_test, y_pred)
-    print("Dokładność:", accuracy)
-
-    # Macierz pomyłek
-    conf_matrix = confusion_matrix(y_test, y_pred)
-    print("Macierz pomyłek:\n", conf_matrix)
+    def predict(self, data):
+        return self.xgb.predict(data)
 
 if __name__ == "__main__":
-    AiModel()
+    model = HeartModel()
+    model.AiModel()
+
