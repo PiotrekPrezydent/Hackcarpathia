@@ -19,20 +19,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 <Button
-                        android:text="Button"
+                        android:background="@drawable/rounded_button"
+                        android:text="Doktor"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp" android:id="@+id/button3"/>
+                        android:layout_height="50dp" android:id="@+id/button3"
+                        style="@android:style/Widget.Material.Light.Button"/>
                 <Space
                         android:layout_width="122dp"
-                        android:layout_height="25dp"/>
+                        android:layout_height="11dp"/>
                 <Button
-                        android:text="Button"
+
+                        android:background="@drawable/rounded_button"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp" android:id="@+id/button2"/>
+                        android:layout_height="50dp" android:id="@+id/button2" android:text="Rodzina"
+                        android:letterSpacing="0.05"
+                        android:drawablePadding="@android:dimen/system_app_widget_background_radius"/>
                 <Space
                         android:layout_width="wrap_content"
                         android:layout_height="227dp"/>
                 <Button
+                        android:background="@drawable/rounded_button"
                         android:text="Button"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" android:id="@+id/button4"/>
