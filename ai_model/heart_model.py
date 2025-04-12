@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.feature_selection import SelectKBest, f_classif
 import os
+from sklearn.metrics import accuracy_score, confusion_matrix
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -24,7 +25,7 @@ def AiModel():
     # Simulate data (replace this with real data from your watch)
     df = pd.read_csv(path)
 
-    features = ['age', 'gender', 'restingrelectro', 'maxheartrate', 'oldpeak', 'slope']
+    features = ['restingrelectro', 'maxheartrate', 'slope']
     X = df[features]
     y = df['target']
 
@@ -41,6 +42,14 @@ def AiModel():
 
     # Compare with actual values
     print("Actual values:", y_test.values)
+
+    # Oblicz dokładność
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Dokładność:", accuracy)
+
+    # Macierz pomyłek
+    conf_matrix = confusion_matrix(y_test, y_pred)
+    print("Macierz pomyłek:\n", conf_matrix)
 
 if __name__ == "__main__":
     AiModel()
