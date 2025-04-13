@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/box_inset_layout_padding"
+    tools:deviceIds="wear">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/inner_frame_layout_padding"
+        app:boxedEdges="all">
+        <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:clipToPadding="true"
+                android:scrollbarStyle="outsideInset" android:fillViewport="true">
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="800dp">
+                <Button
+                        android:textStyle="bold"
+                        android:background="@drawable/rounded_button"
+                        android:text="Doktor"
+                        android:layout_width="match_parent"
+                        android:letterSpacing="0.05"
+                        android:layout_height="50dp" android:id="@+id/button3"
+                        style="@android:style/Widget.Material.Light.Button"/>
+                <Space
+                        android:layout_width="122dp"
+                        android:layout_height="11dp"/>
+                <Button
+                        android:textStyle="bold"
+                        android:background="@drawable/rounded_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp" android:id="@+id/button2" android:text="Rodzina"
+                        android:letterSpacing="0.05"
+                        android:drawablePadding="@android:dimen/system_app_widget_background_radius"/>
+                <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"/>
+                <TextView
+                        android:gravity="left"
+                        android:text="Tętno:"
+                        android:paddingBottom="0dp"
+                        android:layout_marginTop="10dp"
+                        android:paddingLeft="10dp"
+                        android:textSize="18dp"
+                        android:textColor="#EEEE"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp" android:id="@+id/textView2"/>
+                <TextView
+                        android:gravity="center"
+                        android:text="2137 dpm"
+                        android:paddingTop="0dp"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:textColor="#E63732"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp" android:id="@+id/textView3"/>
+            </LinearLayout>
+        </ScrollView>
+    </FrameLayout>
+</androidx.wear.widget.BoxInsetLayout>
